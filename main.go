@@ -29,6 +29,10 @@ func main() {
 	}
 	defer toFile.Close()
 
+	if *limit == 0 {
+		stat, _ := fromFile.Stat()
+		*limit = int(stat.Size())
+	}
 	err = internal.Process(fromFile, toFile, *offset, *limit, func(progress int) {
 		fmt.Printf("%v%%\n", progress)
 	})

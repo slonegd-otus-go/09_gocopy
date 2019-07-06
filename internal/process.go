@@ -16,10 +16,17 @@ func Process(reader io.Reader, writer io.Writer, offset, limit int, callback fun
 			return err
 		}
 	}
-	// TODO разделить limit(или размер) на 100
-	// сделать цикл считывания по частям
-	// в цикле вызывать callback
-	callback(0)
-	io.CopyN(writer, reader, int64(limit))
+
+	chunk := limit / 100
+	if chunk == 0 {
+		chunk = 1
+	}
+
+	for i := 0; i < limit; i += chunk {
+		callback(i * 100 / limit)
+		io.CopyN(writer, reader, int64(chunk))
+	}
+	callback(100)
+
 	return nil
 }
