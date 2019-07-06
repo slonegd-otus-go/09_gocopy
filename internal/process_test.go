@@ -27,10 +27,10 @@ func TestProcess(t *testing.T) {
 			reader: strings.NewReader("test"),
 			limit:  4,
 			callback: func(progress int) {
-				gotProgress += strconv.Itoa(progress) + "%"
+				gotProgress += strconv.Itoa(progress) + "% "
 			},
 			wantWriter:   "test",
-			wantProgress: "0%25%50%75%100",
+			wantProgress: "0% 25% 50% 75% 100% ",
 		},
 	}
 	for _, tt := range tests {
@@ -39,7 +39,7 @@ func TestProcess(t *testing.T) {
 			writer := &bytes.Buffer{}
 			Process(tt.reader, writer, tt.offset, tt.limit, tt.callback)
 			assert.Equal(t, tt.wantWriter, writer.String())
-			assert.Equal(t, tt.wantWriter, writer.String())
+			assert.Equal(t, tt.wantProgress, gotProgress)
 		})
 	}
 }
