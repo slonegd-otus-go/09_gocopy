@@ -22,9 +22,16 @@ func Process(reader io.Reader, writer io.Writer, offset, limit int, callback fun
 		chunk = 1
 	}
 
-	for i := 0; i < limit; i += chunk {
+	for i := 0; i < limit; {
 		callback(i * 100 / limit)
-		io.CopyN(writer, reader, int64(chunk))
+		writen, err := io.CopyN(writer, reader, int64(chunk))
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return errors.New("ошибка копирования")
+		}
+		i += int(writen)
 	}
 	callback(100)
 
