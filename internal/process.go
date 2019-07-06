@@ -2,6 +2,7 @@ package internal
 
 import (
 	"errors"
+	"fmt"
 	"io"
 )
 
@@ -29,7 +30,7 @@ func Process(reader io.Reader, writer io.Writer, offset, limit int, callback fun
 			break
 		}
 		if err != nil {
-			return errors.New("ошибка копирования")
+			return fmt.Errorf("ошибка копирования: %v", err)
 		}
 		i += int(writen)
 	}
