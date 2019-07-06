@@ -3,13 +3,31 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
+
+	"github.com/slonegd-otus-go/09_gocopy/internal"
 )
 
 func main() {
-	from := flag.String("from", "", "copy from: path to file")
-	to := flag.String("to", "", "copy to: path to file")
-	offset := flag.Int("offset", 0, "offset in bytes in file copy from")
-	limit := flag.Int("limit", 0, "limit in bytes for copy data, 0 means no limit")
+	from := flag.String("from", "", "путь до файла, из которого копировать")
+	to := flag.String("to", "", "путь до файла, куда копировать")
+	offset := flag.Int("offset", 0, "смещение в байтах от начала копируемого файла")
+	limit := flag.Int("limit", 0, "максимальный размер в байтах для копирования, 0 означает без предела")
 	flag.Parse()
-	fmt.Println(*from, *to, *offset, *limit)
+
+	fromFile, err := os.Open(*from)
+	if err != nil {
+		fmt.Println("не могу открыть копируемый файл:", err)
+		os.Exit(1)
+	}
+	defer fromFile.Close()
+
+	toFile, err := os.Create(*to)
+	if err != nil {
+		fmt.Println("не могу создать файл, в который копировать:", err)
+		os.Exit(1)
+	}
+	defer toFile.Close()
+
+	internal.Process(fromFile, toFile, *offset, *limit)
 }
