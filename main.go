@@ -29,5 +29,11 @@ func main() {
 	}
 	defer toFile.Close()
 
-	internal.Process(fromFile, toFile, *offset, *limit)
+	err = internal.Process(fromFile, toFile, *offset, *limit, func(progress int) {
+		fmt.Printf("%v%%\n", progress)
+	})
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
