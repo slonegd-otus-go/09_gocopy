@@ -39,7 +39,7 @@ func (errorRead) Seek(int64, int) (int64, error) {
 func TestProcess(t *testing.T) {
 	var gotProgress string
 	callback := func(progress int) {
-		gotProgress += strconv.Itoa(progress) + "% "
+		gotProgress += strconv.Itoa(progress) + " "
 	}
 	tests := []struct {
 		name         string
@@ -59,7 +59,7 @@ func TestProcess(t *testing.T) {
 			limit:        4,
 			callback:     callback,
 			wantWriter:   "test",
-			wantProgress: "0% 25% 50% 75% 100% ",
+			wantProgress: "0 1 2 3 4 ",
 		},
 		{
 			name:         "happy path with offset",
@@ -69,7 +69,7 @@ func TestProcess(t *testing.T) {
 			limit:        2,
 			callback:     callback,
 			wantWriter:   "st",
-			wantProgress: "0% 50% 100% ",
+			wantProgress: "0 1 2 ",
 		},
 		{
 			name:         "limit < lehgth",
@@ -78,7 +78,7 @@ func TestProcess(t *testing.T) {
 			limit:        3,
 			callback:     callback,
 			wantWriter:   "tes",
-			wantProgress: "0% 33% 66% 100% ",
+			wantProgress: "0 1 2 3 ",
 		},
 		{
 			name:         "limit > lehgth",
@@ -87,7 +87,7 @@ func TestProcess(t *testing.T) {
 			limit:        5,
 			callback:     callback,
 			wantWriter:   "test",
-			wantProgress: "0% 20% 40% 60% 80% 100% ",
+			wantProgress: "0 1 2 3 4 4 ", // дополнительная 4, потому что файл меньше limit
 		},
 		{
 			name:         "offset > lehgth",
@@ -97,7 +97,7 @@ func TestProcess(t *testing.T) {
 			offset:       5,
 			callback:     callback,
 			wantWriter:   "",
-			wantProgress: "0% 100% ",
+			wantProgress: "0 0 ",
 		},
 		{
 			name:         "no Seeker error",
@@ -129,7 +129,7 @@ func TestProcess(t *testing.T) {
 			offset:       5,
 			callback:     callback,
 			wantWriter:   "",
-			wantProgress: "0% ",
+			wantProgress: "0 ",
 			wantErr:      "ошибка копирования: read error",
 		},
 	}
