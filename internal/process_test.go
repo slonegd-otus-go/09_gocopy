@@ -134,17 +134,15 @@ func TestProcess(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		//nolint:scopelint
 		t.Run(tt.name, func(t *testing.T) {
 			gotProgress = ""
-			//nolint
 			err := Process(tt.reader, tt.writer, tt.offset, tt.limit, tt.callback)
 			if len(tt.wantErr) != 0 {
 				assert.Error(t, err)
 				assert.Equal(t, tt.wantErr, err.Error())
 			}
-			//nolint
 			assert.Equal(t, tt.wantWriter, tt.writer.(fmt.Stringer).String())
-			//nolint
 			assert.Equal(t, tt.wantProgress, gotProgress)
 		})
 	}
