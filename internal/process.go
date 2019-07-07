@@ -25,14 +25,14 @@ func Process(reader io.Reader, writer io.Writer, offset, limit int, callback fun
 
 	for i := 0; i < limit; {
 		callback(i * 100 / limit)
-		writen, err := io.CopyN(writer, reader, int64(chunk))
+		written, err := io.CopyN(writer, reader, int64(chunk))
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			return fmt.Errorf("ошибка копирования: %v", err)
 		}
-		i += int(writen)
+		i += int(written)
 	}
 	callback(100)
 

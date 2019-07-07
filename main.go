@@ -39,7 +39,7 @@ func main() {
 	}
 
 	err = internal.Process(fromFile, toFile, *offset, *limit, func(progress int) {
-		fmt.Printf("%v%%\n", progress)
+		fmt.Printf("%v ", progress)
 	})
 	if err != nil {
 		fmt.Println(err)

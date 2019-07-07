@@ -20,7 +20,7 @@ func TestProcess(t *testing.T) {
 		callback     func(progress int)
 		wantWriter   string
 		wantProgress string
-		wantErr      bool
+		// wantErr      bool
 	}{
 		{
 			name:   "happy path",
@@ -37,8 +37,11 @@ func TestProcess(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			gotProgress = ""
 			writer := &bytes.Buffer{}
+			//nolint
 			Process(tt.reader, writer, tt.offset, tt.limit, tt.callback)
+			//nolint
 			assert.Equal(t, tt.wantWriter, writer.String())
+			//nolint
 			assert.Equal(t, tt.wantProgress, gotProgress)
 		})
 	}
