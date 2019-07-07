@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cheggaaa/pb/v3"
+
 	"github.com/slonegd-otus-go/09_gocopy/internal"
 )
 
@@ -38,8 +40,12 @@ func main() {
 		*limit = int(stat.Size())
 	}
 
+	bar := pb.StartNew(*limit)
+	defer bar.Finish()
+	bar.SetWriter(os.Stdout)
+
 	err = internal.Process(fromFile, toFile, *offset, *limit, func(progress int) {
-		fmt.Printf("%v ", progress)
+		bar.SetCurrent(int64(progress))
 	})
 	if err != nil {
 		fmt.Println(err)

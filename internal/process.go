@@ -23,8 +23,9 @@ func Process(reader io.Reader, writer io.Writer, offset, limit int, callback fun
 		chunk = 1
 	}
 
-	for i := 0; i < limit; {
-		callback(i * 100 / limit)
+	progress := 0
+	for progress < limit {
+		callback(progress)
 		written, err := io.CopyN(writer, reader, int64(chunk))
 		if err == io.EOF {
 			break
@@ -32,9 +33,9 @@ func Process(reader io.Reader, writer io.Writer, offset, limit int, callback fun
 		if err != nil {
 			return fmt.Errorf("ошибка копирования: %v", err)
 		}
-		i += int(written)
+		progress += int(written)
 	}
-	callback(100)
+	callback(progress)
 
 	return nil
 }
