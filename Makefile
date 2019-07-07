@@ -1,8 +1,16 @@
-all:
-	gofmt -w .
-	go test -cover ./...
-	golangci-lint run --enable-all
-	go build -o gocopy
+all: format test lint build
 
 install:
 	go build -o $(GOPATH)/bin/gocopy
+
+format:
+	gofmt -w .
+
+test:
+	go test -cover ./...
+
+lint:
+	golangci-lint run --enable-all
+
+build:
+	go build -o gocopy
