@@ -12,6 +12,9 @@ import (
 
 func TestProcess(t *testing.T) {
 	var gotProgress string
+	callback := func(progress int) {
+		gotProgress += strconv.Itoa(progress) + "% "
+	}
 	tests := []struct {
 		name         string
 		reader       io.Reader
@@ -26,11 +29,43 @@ func TestProcess(t *testing.T) {
 			name:   "happy path",
 			reader: strings.NewReader("test"),
 			limit:  4,
-			callback: func(progress int) {
-				gotProgress += strconv.Itoa(progress) + "% "
-			},
+			callback: callback,
 			wantWriter:   "test",
 			wantProgress: "0% 25% 50% 75% 100% ",
+		},
+		{
+			name:   "happy path with offset",
+			reader: strings.NewReader("test"),
+			offset: 2,
+			limit:  2,
+			callback: callback,
+			wantWriter:   "st",
+			wantProgress: "0% 50% 100% ",
+		},
+		{
+			name:   "limit < lehgth",
+			reader: strings.NewReader("test"),
+			limit:  3,
+			callback: callback,
+			wantWriter:   "tes",
+			wantProgress: "0% 33% 66% 100% ",
+		},
+		{
+			name:   "limit > lehgth",
+			reader: strings.NewReader("test"),
+			limit:  5,
+			callback: callback,
+			wantWriter:   "test",
+			wantProgress: "0% 20% 40% 60% 80% 100% ",
+		},
+		{
+			name:   "offset > lehgth",
+			reader: strings.NewReader("test"),
+			limit:  5,
+			offset: 5,
+			callback: callback,
+			wantWriter:   "",
+			wantProgress: "0% 100% ",
 		},
 	}
 	for _, tt := range tests {
